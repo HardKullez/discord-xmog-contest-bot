@@ -1,10 +1,10 @@
-import {DiscordMessage} from "../DTO/DiscordMessage";
-import {ContestService} from "../ContestService";
-import {AddParticipantRequest} from "../DTO/Requests/AddParticipantRequest";
-import {DiscordControllerResponse} from "../DTO/DiscordControllerResponse";
-import {VoteForParticipantRequest} from "../DTO/Requests/VoteForParticipantRequest";
-import {AddParticipantMessageValidator} from "../Validators/AddParticipantMessageValidator";
-import {VoteForParticipantMessageValidator} from "../Validators/VoteForParticipantMessageValidator";
+import { DiscordMessage } from "../DTO/DiscordMessage";
+import { ContestService } from "../ContestService";
+import { AddParticipantRequest } from "../DTO/Requests/AddParticipantRequest";
+import { DiscordControllerResponse } from "../DTO/DiscordControllerResponse";
+import { VoteForParticipantRequest } from "../DTO/Requests/VoteForParticipantRequest";
+import { AddParticipantMessageValidator } from "../Validators/AddParticipantMessageValidator";
+import { VoteForParticipantMessageValidator } from "../Validators/VoteForParticipantMessageValidator";
 
 export class DiscordController {
     private readonly contestService: ContestService;
@@ -24,7 +24,7 @@ export class DiscordController {
             return this.handleAddParticipantRequest(msg);
         }
 
-        if (msg.message.substr(0, 5) === '/vote') {
+        if (process.env.CONTEST_MODE != 'reactions' && msg.message.substr(0, 5) === '/vote') {
             return this.handleVoteForParticipantRequest(msg);
         }
 
@@ -54,7 +54,7 @@ export class DiscordController {
                 .handleAddParticipantRequest(addParticipantRequest)
                 .then(result => {
                     if (result.isSuccess) {
-                        resolve(new DiscordControllerResponse(null, msg, false));
+                        resolve(new DiscordControllerResponse('Вы успешно зарегистрированы', msg, false));
                         return;
                     }
 

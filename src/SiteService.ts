@@ -1,21 +1,26 @@
-import {IDbAdapter} from "./IDbAdapter";
-import {createServer} from 'http';
+import { IDbAdapter } from "./IDbAdapter";
+import { createServer } from 'http';
+import { VoteRepository } from "./Repositories/VoteRepository";
+import { ParticipantRepository } from "./Repositories/ParticipantRepository";
 
 export default class SiteService {
-
+    private voteRepository: VoteRepository;
+    private participantRepository: ParticipantRepository;
     private db: IDbAdapter;
 
-    constructor(db: IDbAdapter) {
+    constructor(participantRepository: ParticipantRepository, voteRepository: VoteRepository, db: IDbAdapter) {
+        this.participantRepository = participantRepository
+        this.voteRepository = voteRepository
         this.db = db;
     }
 
     notFoundError(res) {
-        res.writeHead(404, {'Content-Type': 'text/html'});
+        res.writeHead(404, { 'Content-Type': 'text/html' });
         res.end();
     }
 
     badRequestError(res) {
-        res.writeHead(400, {'Content-Type': 'text/html'});
+        res.writeHead(400, { 'Content-Type': 'text/html' });
         res.end();
     }
 
@@ -24,7 +29,7 @@ export default class SiteService {
         res.setHeader('Access-Control-Request-Method', '*');
         res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
         res.setHeader('Access-Control-Allow-Headers', '*');
-        res.writeHead(200, {'Content-Type': 'application/json'});
+        res.writeHead(200, { 'Content-Type': 'application/json' });
 
         let responseData = {
             error: false,
@@ -40,7 +45,7 @@ export default class SiteService {
         res.setHeader('Access-Control-Request-Method', '*');
         res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
         res.setHeader('Access-Control-Allow-Headers', '*');
-        res.writeHead(code, {'Content-Type': 'application/json'});
+        res.writeHead(code, { 'Content-Type': 'application/json' });
 
         let responseData = {
             error: true,
@@ -58,7 +63,7 @@ export default class SiteService {
             }
 
             let result: object;
-            switch(urlChunks[1]) {
+            switch (urlChunks[1]) {
                 case 'participants':
                     result = await this.db
                         .all("SELECT p.*, IFNULL(ps.score, 0) - IFNULL(wv.weird_votes, 0) as votes\n" +
@@ -119,7 +124,9 @@ export default class SiteService {
 
                     return this.jsonSuccessResponse(res, result);
                 case 'voters':
-                    return this.jsonSuccessResponse(res, {});
+                    result = await this.voteRepository.getAllVotes()
+
+                    return this.jsonSuccessResponse(res, result);
                 case 'voter':
 
                     if (urlChunks.length < 3) {

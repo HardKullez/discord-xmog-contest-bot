@@ -1,18 +1,20 @@
-import {CommandService} from "./src/CommandService";
-import {config as dotenvInit} from "dotenv";
-import {Database} from "sqlite3";
-import {SqliteDbAdapter} from "./src/SqliteDbAdapter";
-import {ParticipantRepository} from "./src/Repositories/ParticipantRepository";
-import {Client} from 'discord.js';
+import { CommandService } from "./src/CommandService";
+import { config as dotenvInit } from "dotenv";
+import { Database } from "sqlite3";
+import { SqliteDbAdapter } from "./src/SqliteDbAdapter";
+import { ParticipantRepository } from "./src/Repositories/ParticipantRepository";
+import { Client } from 'discord.js';
+import { VoteRepository } from "./src/Repositories/VoteRepository";
 
 dotenvInit();
 
 let db = new Database('./prod-db.db3');
 let adapter = new SqliteDbAdapter(db);
 let participantRepository = new ParticipantRepository(adapter);
+let voteRepository = new VoteRepository(adapter);
 let discordClient = new Client();
 
-let commandService = new CommandService(participantRepository, discordClient, adapter);
+let commandService = new CommandService(participantRepository, voteRepository, discordClient, adapter);
 
 if (process.argv.length < 3) {
     console.error("You should specify the command");

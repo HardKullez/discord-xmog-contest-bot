@@ -1,13 +1,13 @@
-import {config as dotenvInit} from 'dotenv';
-import {DiscordService} from "./src/DiscordService";
-import {Database} from "sqlite3";
-import {SqliteDbAdapter} from "./src/SqliteDbAdapter";
-import {ParticipantRepository} from "./src/Repositories/ParticipantRepository";
-import {VoteRepository} from "./src/Repositories/VoteRepository";
-import {ContestSettings} from "./src/DTO/ContestSettings";
-import {ContestService} from "./src/ContestService";
-import {Client} from "discord.js";
-import {DiscordController} from "./src/Controllers/DiscordController";
+import { config as dotenvInit } from 'dotenv';
+import { DiscordService } from "./src/DiscordService";
+import { Database } from "sqlite3";
+import { SqliteDbAdapter } from "./src/SqliteDbAdapter";
+import { ParticipantRepository } from "./src/Repositories/ParticipantRepository";
+import { VoteRepository } from "./src/Repositories/VoteRepository";
+import { ContestSettings } from "./src/DTO/ContestSettings";
+import { ContestService } from "./src/ContestService";
+import { Client } from "discord.js";
+import { DiscordController } from "./src/Controllers/DiscordController";
 
 dotenvInit();
 
@@ -29,7 +29,8 @@ let service = new DiscordService(
     discordController,
     discordClient,
     process.env.DISCORD_BOT_TOKEN,
-    process.env.CONTEST_CHANNEL_NAME
+    process.env.CONTEST_CHANNEL_NAME,
+    announcerIds
 );
 
 service.start();

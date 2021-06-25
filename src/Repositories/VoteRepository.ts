@@ -1,7 +1,6 @@
-import {IVoteRepository} from "./IVoteRepository";
-import {Vote} from "../Models/Vote";
-import {DatabaseError, DatabaseErrorCode} from "../Exceptions/DatabaseError";
-import {IDbAdapter} from "../IDbAdapter";
+import { IVoteRepository } from "./IVoteRepository";
+import { Vote } from "../Models/Vote";
+import { IDbAdapter } from "../IDbAdapter";
 
 export class VoteRepository implements IVoteRepository {
     private db: IDbAdapter;
@@ -37,5 +36,9 @@ export class VoteRepository implements IVoteRepository {
                 resolve(parseInt(result) > 0);
             })
         });
+    }
+
+    async getAllVotes(): Promise<Vote[]> {
+        return await this.db.all("SELECT participant_id, voter_discord_id, voter_discord_name FROM votes")
     }
 }
